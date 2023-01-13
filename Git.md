@@ -73,8 +73,38 @@
   $ git log
   ```
  - commit한 기록을 볼수 있음
+ ```git
+ $ git push origin master
+ $ git push -u origin master
+ ```
+ - 원격저장소로 push
+ - origin은 저장소 이름, master는 브렌치 이름
+ - -u를 붙여서 push했을 때 다음 push부턴 저장소 이름과 브렌치 이름을 생략가능
+ ```git
+ $ git remote add origin (url)
+ ```
+ - origin이라는 이름으로 url의 원격저장소를 추가
+ ```git
+ $ git remote -v
+ ```
+- 원격저장소 조회
+```git
+$ git remote rm origin
+```
+- origin이라는 이름의 원격저장소 삭제
 
 # Github (remote repo, 원격저장소)
 
 - 외부 저장소
 - GitLab, GitBucket도 존재
+
+```git
+$ git clone (url)
+```
+- 복사해서 가져옴
+- init 및 add가 이미 되어있음
+- 처음 한번만 하면됨
+```git
+$ git pull origin master
+```
+- origin이라는 원격저장소에서 master라는 브렌치를 가져온다
