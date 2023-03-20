@@ -178,12 +178,12 @@ $ python manage.py sqlmigrate articles 0001
 - 편의를 위한 추가 라이브러리 설치
 ```git
 $ pip install ipython
-$ pip install django-extentions
+$ pip install django-extensions
 ```
 ```python
 # settings.py
 INSTALLED_APPS = [
-    'django_extentions',    # django-extentions 사용시 추가
+    'django_extensions',    # django-extensions 사용시 추가
     ...,
 ]
 ```
