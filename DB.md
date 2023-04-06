@@ -194,11 +194,33 @@ CREATE TABLE contacts (
     - 테이블에서 행의 고유성을 식별하는 데 사용되는 컬럼
     - 각 테이블에는 하나의 기본 키만 있음
     - 암시적으로 NOT NULL제약조건이 포함되어 있음
+```SQL
+CREATE TABLE table_name (
+    id INTEGER PRIMARY KEY,
+    ...
+);
+```
 4. AUTOINCREMENT
     - 사용되지 않은 값이나 이전에 삭제된 행의 값을 재사용하는 것을 방지
     - INTEGER PRIMARY KEY 다음에 작성하면 해당 rowid를 다시 재사용하지 못하도록 함
     - Django에서 테이블 생성 시 id컬럼에 기본적으로 사용하는 제약조건
-5. 기타
+```SQL
+CREATE TABLE table_name (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ...
+);
+```
+> rowid
+- 테이블을 생성할 때 마다 rowid라는 암시적 자동 증가 컬럼이 자동으로 생성됨
+- 테이블의 행을 고유하게 식별하는 64비트 부호 있는 정수 값
+- 테이블에 새 행을 삽입할 때마다 정수 값을 자동으로 할당
+    - 값은 1에서 시작
+    - 데이터 삽입 시에 rowid 또는 INTEGER PRIMARY KEY 컬럼에 명시적으로 값이 지정되지 않은 경우, SQLite는 테이블에서 가장 큰 rowid보다 하나 큰 다음 순차 정수를 자동으로 할당(AUTOINCREMENT와 관계 없이)
+- 만약 INTEGER PRIMARY KEY 키워드를 가진 컬럼을 직접 만들면 이 컬럼은 rowid 컬럼의 별칭(alias)이 됨
+    - 즉, 새 컬럼 이름으로 rowid에 액세스 할 수 있으며 rowid 이름으로도 여전히 액세스가능
+- 데이터가 최대 값에 도달하고 새 행을 삽입하려고 하면 SQLite는 사용되지 않는 정수를 찾아 사용
+- 만약 SQLite가 사용되지 않은 정수를 찾을 수 없으면 SQLITE_FULL에러가 발생
+    - 또한 일부 행을 사겢하고 새 행을 삽입하면 SQLite는 삭제된 행에서 rowid값을 재사용하려고 시도
 
 ### ALTER TABLE
 ---
@@ -220,7 +242,7 @@ ALTER TABLE table_name RENAME COLUMN column_name TO new_column_name;
 ```
 > Add a new column to a table
 ```sql
-ALTER TABLE table_name ADD COLUMN column_definition;
+ALTER TABLE table_name ADD COLUMN column_name column_definition;
 ```
 - 테이블에 기존 데이터가 있을 경우 에러 발생
 - 새롭게 추가되는 컬럼에는 값이 없기 때문에 NULL로 작성됨
@@ -562,37 +584,4 @@ SELECT first_name, age FROM users ORDER BY age LIMIT 5;
 - 11번째부터 20번째 데이터의 rowid와 이름 조회
 ```sql
 SELECT rowid, first_name FROM users LIMIT 10 OFFSET 10;
-```
-> Aggregate Function (집계함수)
-- select 구문에서만 사용
-- 예시
-    - COUNT, AVG, MAX, MIN
-```SQL
-SELECT COUNT(column) FROM table_name;
-```
-- 레코드 총 갯수 조회
-```sql
-SELECT COUNT(*) FROM users;
-```
-- 30살 이상인 사람들의 평균 나이 조회
-```sql
-SELECT AVG(age) FROM users WHERE age >= 30;
-```
-- 계좌 잔액이 가장 높은 사람과 그 액수 조회
-```sql
-SELECT first_name, MAX(balance) FROM users;
-```
-- 나이가 30이상인 사람의 계좌 평균 잔액을 조회
-```sql
-SELECT AVG(balance) FROM users WHERE age >= 30;
-```
-> GROUP BY
-- 각 성(last name)씨가 몇 명씩 있는지 조회
-```sql
-SELECT lase_name, COUNT(*) FROM users GROUP BY last_name;
-```
-- WHERE 절 존재시 반드시 WHERE절 뒤에 작성
-- AS를 활용하여 COUNT에 해당하는 컬럼명을 바꿔서 조회 가능
-```sql
-SELECT lase_name, COUNT(*) AS name_count FROM users GROUP BY last_name;
 ```
