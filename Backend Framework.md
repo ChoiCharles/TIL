@@ -8,15 +8,17 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from .models import Article
+from .serializers import ArticleSerializer
 
 @api_view(['GET', 'POST'])
 def article_list(request):
     if request.method == 'GET':
         articles = Article.objects.all()
-        serializer = ArticleListSerializer(articles, many=True)
+        serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = ArticleListSerializer(data=request.data)
+        serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -235,7 +237,7 @@ def comment_detail(request, comment_pk):
 ```python
 # articles/serializers.py
 
-class ArticleListSerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
     comment_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = Article
@@ -248,7 +250,7 @@ class ArticleListSerializer(serializers.ModelSerializer):
 ```python
 # articles/serializers.py
 
-class ArticleListSerializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
     # comment_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     comment_set = CommentSerializer(many=True, read_only=True)
     class Meta:
@@ -470,20 +472,20 @@ INSTALLED_APPS = [
 ]
 ```
 ```python
-# articles/urls.py
+# urls.py
 # drf_yasg 공식문서 quick start 참고
 
-from django.urls import path, re_path
-from articles import views
+from django.contrib import admin
+from django.urls import path, include, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="MY DRF API",
       default_version='v1',
-      description="Test description",
+      description="Swagger를 이용한 DRF API 문서",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
@@ -493,11 +495,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('articles/', views.article_list),
-    ...,
+    path('admin/', admin.site.urls),
+    path('api/v1/', include('articles.urls')),
 ]
 
-urlpatterns = [
+urlpatterns += [
    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
