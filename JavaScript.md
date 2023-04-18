@@ -1,0 +1,595 @@
+# JavaScript 시작하기
+## JavaScript란?
+- JavaScript는 클라이언트 측 웹(브라우저)에서 실행
+- JavaScript는 쉡게 배울 수 있고 강력한 스크립트 언어
+- 웹페이지가 이벤트 발생 시 어떻게 작동하는지 디자인/프로그래밍 웹페이지 동작을 제어하는 데 널리 사용
+> Web 기술의 기반이 되는 언어
+- HTML 문서의 콘텐츠를 동적으로 변경할 수 있는 언어
+- Web이라는 공간에서 채팅, 게임 등 다양한 동작을 할 수 있게 된 기반
+- 실제 JavaScript는 언어의 확장성 만큼 큰 인기를 얻고 있는 언어
+## JavaScript Engine
+- JavaScript Engine은 자바스크립트 코드를 실행하는 프로그램 또는 인터프리터로 여러 목적으로 자바스크립트 엔진을 사용하지만, 대체적으로 웹 브라우저에서 사용
+### 웹 브라우저의 역할
+- URL을 통해 Web을 탐색함
+- HTML/CSS/JavaScript를 이해한 뒤 해석해서 사용자에게 하나의 화면으로 보여줌
+- 웹 서비스 이용 시 클라이언트의 역할을 함
+- 즉, 웹 페이지 코드를 이해하고 보여주는 역할을 하는 것이 바로 웹 브라우저
+### JavaScript Engine
+- HTML/CSS/JavaScript를 이해한뒤 해석
+    - JavaScript를 해석하는 것이 JavaScript Engine의 역할
+- 각 브라우저마다 자체 JavaScript Engine을 개발, 사용하고 있음
+    - V8 - Chrome
+    - Chakra - Microsoft Edge
+    - JSC(JavaScript Core)
+    - SpiderMonkey - FireFox
+- 대체적으로 웹 브라우저에서 사용
+- 웹 브라우저 외에는 어떻게 할용할까
+    - Node.js
+        - Node.js는 V8 엔진을 사용하여 서버 측에서 자바스크립트 코드를 실행 가능하며 브라우저 조작 이외의 역할도 수행
+## JavaScript 실행 환경 구성
+### Web Browser로 실행
+- HTML 파일에 직접 JavaScript 코드를 작성 후 웹 브라우저로 파일 열기
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  ...
+</head>
+<body>
+
+  <script>
+    console.log('hello')
+  </script>
+</body>
+</html>
+```
+- Chrome의 개발자 도구- Console 탭에서 결과 확인 가능
+- .js 확장자를 가진 파일에 JavaScript를 작성하고, 해당 파일을 HTML에 포함 가능
+```
+// hello.js
+
+console.log('hello')
+```
+```html
+<!-- hello.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  ...
+</head>
+<body>
+</body>
+<script type="text/javescript" src="hello.js"></script>
+</html>
+```
+- 웹 브라우저의 console에서 바로 JavaScript를 입력해도 된다
+- 특별하게 웹 브라우저에서 바로 실행할 수 있는 JavaScript문법들을 Vanilla JavaScript라고 부름
+### 정리
+- 웹 브라우저는 JavaScript를 해석하는 엔진을 가지고 있음
+- 특히, Chrome의 V8의 경우 JavaScript를 번역하는 속도가 매우 빠름
+- 현재의 JavaScript는 시장에 자리잡은 언어이며, 개발에서 큰 축을 담당하는 언어
+## JavaScript를 시작하기 전에
+### EcmaScript
+- EcmaScript란, Ecma International(전자 정보 통신 시스템 표준화 기구)이 ECMA-262 규격에 따라 정의하고 있는 표준화된 스크립트 프로그래밍 언어를 뜻함
+- 즉, JavaScript를 표준화하기 위해 만들어짐
+### EcmaScript가 정의하는 것
+- JavaScript의 기본적인 문법, 데이터 타입, 객체 모델, 함수, 연산자 등을 저의
+### 주석
+- 한 줄 주석(//)과 여러줄(/**/)주석
+### 들여쓰기와 코드 블럭
+- python은 4칸 들여쓰기를 사용하지만, JavaScript는 2칸 들여쓰기를 사용
+- 블럭(block)은 if, for, 함수에서 중괄호{}내부를 말함
+    - python은 들여쓰기를 이용해서 코드 블럭을 구분
+    - JavaScript는 중괄호 {} 를 사용해 코드 블럭을 구분
+```js
+if (isClean) {
+    console.log('clean!')
+}
+```
+### 세미콜론
+- JavaScript는 세미콜론을 선택적으로 사용 가능
+- 세미콜론이 없으면 ASI에 의해 자동으로 세미콜론이 삽입됨
+    - ASI (Automatic Semicolon Insertion, 자동 세미콜론 삽입 규칙)
+- 세미콜론 사용 여부에 대해서는 연전히 논란이 많은 주제
+# JavaScript 기본문법
+## 변수와 식별자
+### 식별자 정의와 특징
+- 식별자(identifier)는 변수를 구분할 수 있는 변수명을 말함
+- 식별자는 반드시 문자, 달러($) 또는 밑줄(_)로 시작
+- 대소문자를 구분하며, 클래스명 외에는 모두 소문자로 시작
+- 예약어 사용 불가능
+    - for, if function 등
+- 카멜 케이스 (camelCase)
+    - 변수, 객체, 함수에 사용
+```js
+// 변수
+let dog
+let variableName
+
+// 객체
+const userInfo = {name:'Tom', age:20}
+
+// 함수
+function add() {}
+function getName() {}
+```
+- 파스칼 케이스(PascalCase)
+    - 클래스, 생성자에 사용
+```js
+// 클래스
+class User {
+    constructor(options) {
+        this.name = options.name
+    }
+}
+
+// 생성자 함수
+function User(options) {
+    this.name = options.name
+}
+```
+- 대문자 스네이크 케이스(SNAKE_CASE)
+    - 상수(constants)에 사용
+    - 상수 : 개발자의 의도와 상관없이 변경될 가능성이 없는 값을 의미
+```js
+// 값이 바뀌지 않을 상수
+const API_KEY = 'my-key'
+const PI = Math.PI
+
+// 재할당이 일어나지 않는 변수
+const NUMBERS = [1, 2, 3]
+```
+### 변수 선언 키워드
+- python과 다르게 JavaScript는 변수를 선언하는 키워드가 정해져 있음
+    1. let
+        - 블록 스코프 지역 변수를 선언 (추가로 동시에 값을 초기화)
+        - 재할당 가능 & 재선언 불가능
+    ```js
+    let number = 10 // 선언 및 초기값 할당
+    number = 20     // 재할당
+    let number = 10 // 재선언 불가능
+    ```
+    2. const
+        - 블록 스코프 읽기 전용 상수를 선언 (추가로 동시에 값을 초기화)
+        - 재할당 불가능 & 재선언 불가능
+        - 선언 시 반드시 초기값을 설정 해야 하며, 이후 값 변경이 불가능
+    ```js
+    const number = 10   // 선언 및 초기값 할당
+    number = 20         // 재할당 불가능
+    const number = 10   // 재선언 불가능
+    ```
+    3. var
+        - 변수를 선언 (추가로 동시에 값을 초기화)
+        - 재할당 & 재선언 가능
+        - ES6 이전에 변수를 선언할 때 사용되던 키워드
+        - "호이스팅"되는 특성으로 인해 예기치 못한 문제 발생 가능
+            - 따라서 ES6 이후부터는 var 대신 const와 let을 사용하는 것을 권장
+        - 함수 스코프(function scope)를 가짐
+> [참고] 선언, 할당, 초기화
+- 선언 (Declaration)
+    - 변수를 생성하는 행위 또는 시점
+- 할당 (Assignment)
+    - 선언된 변수에 값을 저장하는 행위 또는 시점
+- 초기화 (Initialization)
+    - 선언된 변수에 처음으로 값을 저장하는 행위 또는 시점
+```js
+let x = 1
+if (x === 1) {
+    let x = 2
+    console.log(x)  //2
+}
+
+console.log(x)      //1
+```
+```js
+let foo             // 선언
+console.log(foo)    // undefined
+
+foo = ll            // 할당
+console.log(foo)    // ll
+
+let bar = 0         // 선언 + 할당
+console.log(bar)    // 0
+```
+### 블록 스코프 (block scope)
+- if, for, 함수 등의 중괄호 {} 내부를 가리킴
+- 블록 스코프를 가지는 변수는 블록 바깥에서 접근 불가능
+### 함수 스코프 (function scope)
+- 함수의 중괄호 내부를 가리킴
+- 함수 스코프를 가지는 변수는 함수 바깥에서 접근 불가능
+```js
+function foo() {
+    var x = 5
+    console.log(x)  // 5
+}
+
+// ReferenceError: x is not defined
+console.log(x)
+```
+### 호이스팅 (hoisting)
+- 변수를 선언 이전에 참조할 수 있는 현상
+- var로 선언된 변수는 선언 이전에 참조할 수 있으며, 이러한 현상을 호이스팅이라 함
+- 변수 선언 이전의 위치에서 접근 시 undefined를 반환
+```js
+console.log(name)   // undefined => 선언 이전에 참조
+
+var name = '홍길동' // 선언
+
+// 위 코드를 암묵적으로 아래와 같이 이해함
+var name // undefined로 초기화
+console.log(name)
+
+var name = '홍길동'
+```
+- 즉, JavaScript에서 변수들은 실제 실행시에 코드의 최상단으로 끌어 올려지게 되며(hoisted) 이러한 이유 때문에 var로 선언된 변수는 선언 시에 undefined로 값이 초기화되는 과정이 동시에 일어남
+- 반면 let, const는 호이스팅이 일어나면 에러를 발생시킴
+- 변수를 선언하기 전에 접근이 가능한 것은 코드의 논리적인 흐름을 깨뜨리는 행위이며 이러한 것을 방지하기 위해 let, const가 추가되었음
+    - 즉, var는 사용하지 않아야 하는 키워드
+- 다만, 아직까지도 많은 기존의 JavaScript 코드는 ES6 이전의 문법으로 작성되어 있으므로 호이스팅에 대한 이해가 필요
+### 변수 선언 키워드 정리
+|키워드|재선언|재할당|스코프|비고|
+|-----|-----|-----|-----|-----|
+|let|X|O|블록 스코프|ES6부터 도입|
+|const|X|X|블록 스코프|ES6부터 도입|
+|var|O|O|함수 스코프|사용 X|
+- 어디에 변수를 쓰고 상수를 쓸지 결정하는 것은 프로그래머의 몫
+- Airbnb 스타일 가이드에서는 기본적으로 const 사용을 권장
+    - 재할당해야 하는 경우만 let
+## 데이터 타입
+- JavaScript의 모든 값은 특정한 데이터 타입을 가짐
+- 크게 원시 타입(Primitive type)과 참조 타입(Reference type)으로 분류됨
+### 원시 타입(Primitive type)
+1. Number - 정수 또는 실수형 숫자를 표현하는 자료형
+    ```js
+    const a=13
+    const b=-5
+    const c=3.14
+    const d=2.998e8
+    const e=Infinity
+    const f=-Infinity
+    const g=NaN
+    ```
+    - NaN을 반환하는 경우
+        1. 숫자로서 읽을 수 없음 (parselnt("어쩌구"), Number(undefined))
+        2. 결과가 허수인 수학 계산식 (Math.sqrt(-1))
+        3. 피연산자가 NaN (7 ** NaN)
+        4. 정의할 수 없는 계산식 (0 * Infinity)
+        5. 문자열을 포함하면서 덧셈이 아닌 계산식 ("가" / 3)
+2. String - 문자열을 표현하는 자료형
+    - 작은 따옴표 또는 큰 따옴표 모두 가능
+    ```js
+    const sentence1 = 'hello'
+    const sentence2 = "hello"
+
+    console.log(sentence1)
+    console.log(sentence2)
+    ```
+    - 곱셈, 나눗셈, 뺄셈은 안되지만 덧셈을 통해 문자열끼리 붙일 수 있음
+    ```js
+    const firstName = 'Tony'
+    const lastName = 'Stark'
+    const fullName = firstName + lastName
+
+    console.log(fullName)
+    ```
+    - 따옴표를 사용하면 선언시 줄 바꿈 불가능
+    - 대신 escape sequence를 사용할 수 있기 때문에 \n를 사용
+    ```js
+    // Bad
+    const word = 'hello
+    world'//Uncaught SyntaxError: Invalid or unexpected token
+
+    // Good
+    const word1 = 'hello \nworld'
+    console.log(word1)
+    ```
+    - Template Literal(1왼쪽의 점)을 사용하면 줄 바꿈이 가능, 문자열 사이에 변수도 삽입 가능
+    ```js
+    const word2=`hello
+    world`
+    console.log(word2)
+
+    const age=0
+    const message=`홍길동은 ${age}세입니다.`
+    consolo.log(message)
+    ```
+3. null - 값이 없음을 나타냄
+    ```js
+    let lastName=Null
+    console.log(lastName) //null
+    ```
+4. undefined - 값이 할당되지 않은 변수를 나타냄
+    ```js
+    let firstName
+    console.log(firstName) // undefined
+    ```
+5. Boolean - 참과 거짓을 표현하는 자료형
+    - 조건문 또는 반복문에서 유용하게 사용
+        조건문 또는 반복문에서 boolean이 아닌 데이터 타입은 자동 형변환 규칙에 따라 true 또는 false로 변환됨
+6. Symbol - 유일한 값을 표현하는 자료형, ES6에서 추가
+
+### Template literals
+- 내자왼 표현식을 허용하는 문자열 작성 방식
+- ES6+ 부터 지원
+- Backtick(``)을 이용하며, 여러 줄에 걸쳐 문자열을 정의할 수도 있고 JavaScript의 변수를 문자열 안에 바로 연결할 수 있는 이점이 생김
+- 표현식을 넣을 수 있는데 이는 $와 중괄호(${expression})로 표기
+### null과 undefined
+- null과 undefined의 가장 대표적인 차이점은 typeof 연산자를 통해 타입을 확인 했을 때 나타남
+```js
+typeof null         // object
+typeof undefined    // undefined
+```
+- null이 원시 타입임에도 불구하고 object로 출력되는 이유는 JavaScript 설계 당시의 버그를 지금까지 해결하지 못한 것
+- 쉽게 해결 할 수 없는 이유는 이미 null 타입에 의존성을 띄고 있는 많은 프로그램들이 망가질 수 있기 때문 (하위 호환 유지)
+### 참조 타입 (Reference type)
+1. Object - 이름과 값을 가진 속성(property)들의 집합으로 이루어진 자료구조
+2. Array - 여러 개의 값을 순서대로 저장하는 자료구조
+3. function - function 키워드를 통해 생성하며, 호출 시 실행 될 코드를 정의
+### 객체 (Object)
+- 객체는 속성(property)의 집합이며, 중괄호 내부에 key와 value의 쌍으로 표현
+- key
+    - 문자열 타입만 가능
+    - key 이름에 띄어쓰기 등의 구분자가 있으면 따옴표로 묶어서 표현
+- value
+    - 모든 타입(함수 포함) 가능
+- 객체 요소 접근
+    - 점(.) 또는 대괄호([])로 가능
+    - key 이름에 띄어쓰기 같은 구분자가 있으면 대괄호 접근만 가능
+```js
+const me= {
+    name:'jack',
+    phoneNumver:'01012345678',
+    'samsung products':{
+        buds:'Galaxy Buds Pro',
+        galaxy:'Galaxy S99',
+    },
+}
+
+console.log(me.name)
+console.log(me['name'])
+console.log(me['samsung products'])
+console.log(me.samsung products) // 불가능
+console.log(me['samsung products'].buds)
+```
+### 배열 (Array)
+- 키와 속성들을 담고 있는 참조 타입의 객체
+- 순서를 보장하는 특징이 있음
+- 주로 대괄호([])를 이용하여 생성하고, 0을 포함한 양의 정수 인덱스로 특정 값에 접근 가능
+- 배열의 길이는 array.length형태로 접근 가능
+```js
+const numbers=[1, 2, 3, 4, 5]
+console.log(numbers[0])     // 1
+console.log(numbers[-1])    // undefined
+console.log(numbers.length) // 5
+console.log(numbers[numbers.length-1]) // 5
+```
+### 함수 (Function)
+- 참조 타입 중 하나로써 function 타입에 속함
+- JavaScript에서 함수를 정의하는 방법은 주로 2가지로 구분됨
+    - 함수 선언식 (function declaration)
+        - 일반적인 프로그래밍 언어의 함수 정의 방식
+        ```js
+        function 함수명(매개변수) {
+
+        }
+
+        function add(num1,num2) {
+            return num1+num2
+        }
+        add(2,7)
+        ```
+    - 함수 표현식 (function expression)
+        - 표현식 내에서 함수를 정의하는 방식
+        - 함수 표현식은 함수의 이름을 생략한 익명 함수로 정의 가능
+        ```js
+        변수키워드 함수명 = function (매개변수) {
+
+        }
+
+        const sub = function (num1, num2) {
+            return num1-num2
+        }
+        sub(7,2)
+        ```
+        - 표현식에서 함수 이름을 명시하는 것도 가능
+        - 다만 이 경우 함수 이름은 호출에 사용되지 못하고 디버깅 용도로 사용됨
+        ```js
+        const mySub = function namedSub(num1, num2) {
+            return num1-num2
+        }
+        mySub(1, 2) // -1
+        namedSub(1m 2)  // ReferenceError: namedSub is not defined
+### ToBoolean Conversions (자동 형변환)
+|데이터 타입|False|True|
+|----|----|----|
+|undefined|항상 False|X|
+|null|항상 False|X|
+|Number|0, -0, NaN|나머지|
+|String|빈 문자열|나머지|
+|Object|X|항상 True|
+## 연산자
+### 할당 연산자
+- 오른쪽에 있는 피연산자의 평가 결과를 왼쪽 피연산자에 할당하는 연산자
+- 다양한 연산에 대한 단축 연산자 지원
+- Increment 및 Decrement 연산자
+    - Increment(++): 피연산자의 값을 1 증가시키는 연산자
+    - Decrement(--): 피연산자의 값을 1 감소시키는 연산자
+    - += 또는 -= 와 같이 더 분명한 표현으로 적을 것을 권장
+```js
+let c=0
+c += 10
+console.log(c) // c + 10
+c -= 3
+console.log(c) // c - 3
+c *= 10
+console.log(c) // c * 10
+c ++
+console.log(c) // c + 1
+c --
+console.log(c) // c - 1
+```
+### 비교연산자
+- 피연산자들(숫자, 문자, Boolean 등)을 비교하고 결과값을 boolean으로 반환하는 연산자
+- 문자열은 유니코드 값을 사용하며 표준 사전 순서를 기반으로 비교
+    - 알파벳끼리 비교할 경우
+        - 알파벳 순서상 후순위가 더 크다
+        - 소문자가 대문자보다 더 크다
+```js
+3 > 2 // true
+3 < 2 // false
+'A'<'B' // true
+'Z'<'a' // true
+'가'<'나' // true
+```
+### 동등 연산자 (==)
+- 두 연산자가 같은 값으로 평가되는지 비교 후 boolean값을 반환
+- 비교할 때 암묵적 타입 변환을 통해 타입을 일치시킨 후 같은 값인지 비교
+- 두 피연산자가 모두 객체일 경우 메모리의 같은 객체를 바라보는지 판별
+- 예상치 못한 결과가 발생할 수 있으므로 특별한 경우를 제외하고 사용하지 않음
+```js
+const a=1
+const b='1'
+console.log(a==b)    // true
+console.log(a==true) // true
+```
+### 일치 연산자(===)
+- 두 피연산자의 값과 타입이 모두 같은 경우 true를 반환
+- 같은 객체를 가리키거나, 같은 타입이면서 같은 값인지를 비교
+- 엄격한 비교가 이뤄지며 암묵적 타입 변환이 발생하지 않음
+    - 엄격한 비교- 두 비교 대상의 타입과 값 모두 같은지 비교하는 방식
+```js
+const a=1
+const b='1'
+console.log(a===b)    // false
+console.log(a===Number(b)) // true
+```
+### 논리 연산자
+- 세가지 논리 연산자로 구성
+    - && : and
+    - || : or
+    - ! : not
+- 단축 평가 지원
+    - ex) false && true => false
+    - ex) true || false => true
+
+### 삼항 연산자 (Ternary Operator)
+- 3개의 피연산자를 사용하여 조건에 따라 값을 반환하는 연산자
+- 가장 앞의 조건식이 참이면 :(콜론) 앞의 값이 반환되며, 그 반대일 경우 : 뒤의 값이 반환된는 연산자
+- 삼항 연산자의 결과 값이기 때문에 변수에 할당 가능
+```js
+true ? 1:2 // 1
+false ? 1:2 // 2
+
+const result=Math.PI>4 ? 'Yep':'Nope'
+console.log(result) // Nope
+```
+### 스프레드 연산자 (Spread Operator)
+- 배열이나 객체를 전개하여 각 요소를 개별적인 값으로 분리하는 연산자
+- 주로 함수 호출 시 매개변수로 배열이나 객체를 전달할 때 사용
+- 얕은 복사를 위해서도 활용 가능
+```js
+const numbers=[1,2,3]
+const otherNumbers=[...numbers,4,5] // [1,2,3,4,5]
+const copyNumbers=[...numbers] // [1,2,3]
+const obj={a:1, b:2}
+const otherObj={c:3, ...obj} // {a:1, b:2, c:3}
+const copyObj={...obj} // {a:1, b:2}
+```
+## 조건문
+- 조건 표현식의 결과값을 boolean 타입으로 변환 후 참/거짓을 판단
+### if statement
+- if, else if, else
+    - 조건은 소괄호(condition) 안에 작성
+    - 실행할 코드는 중괄호 {} 안에 작성
+    - 블록 스코프 생성
+```js
+const name='manager'
+if (name==='admin') {
+    console.log('관리자님 환영합니다.')
+}
+else if (name==='manager') {
+    console.log('매니저님 환영합니다.')
+}
+else {
+    console.log(`${name}님 환영합니다.`)
+}
+```
+## 반복문
+### while
+- 조건문이 참이기만 하면 문장을 계속해서 수행
+```js
+while (조건문) {
+
+}
+
+let i=0
+while (i<6) {
+    console.log(i)
+    i+=1
+}
+```
+### for
+- 특정한 조건이 거짓으로 판별될 때까지 반복
+```js
+for([초기문];[조건문];[증감문]) {
+
+}
+
+for (let i=0;i<6;i++) {
+    console.log(i)
+}
+```
+- 동작 예시
+    1. 반복문 진입 및 초기문(let i=0)을 통해 변수 선언
+    2. 조건문 평가 후 코드 블럭 실행
+    3. 코드 블럭 실행 이후 i값 증가
+### for...in
+- 객체(object)의 속성을 순회할 때 사용
+- 배열도 순회 가능하지만 인덱스 순으로 순회한다는 보장이 없으므로 권장하지 않음
+```js
+for (variable in object) {
+    statements
+}
+
+const fruits={a:'apple', b:'banana'}
+for (const key in fruits) {
+    console.log(key)    // a, b
+    console.log(fruits[key])    // apple, banana
+}
+```
+### for...of
+- 반복 가능한 객체를 순회할 때 사용
+- 반복 가능한(iterable) 객체의 종류: Array, Set, String 등
+```js
+for (variable of object) {
+    statement
+}
+
+const numbers=[0, 1, 2, 3]
+for (const number of numbers) {
+    console.log(number) //0, 1, 2, 3
+}
+```
+
+### for...in과 for...of 차이
+- for...in은 "속성 이름"을 통해 반복, 객체 순회 적합
+- for...of는 "속성 값"을 통해 반복, Iterable 순회 적합
+```js
+const arr=[3, 5, 7]
+
+for (const i in arr) {
+    console.log(i) // 0 1 2
+}
+
+for (const i of arr) {
+    console.log(i) // 3 5 7
+}
+```
+|키워드|종류|연관 키워드|스코프
+|----|----|----|----|
+|if|조건문|-|블록스코프|
+|while|반복문|break, continue|블록스코프|
+|for|반복문|break, continue|블록스코프|
+|for...in|반복문|객체 순회|블록스코프|
+|for...of|반복문|Iterable 순회|블록스코프|
