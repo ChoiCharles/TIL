@@ -1224,7 +1224,7 @@ chars.forEach(char => {
 |forEach|- 대부분의 브라우저 환경에서 지원 <br>- break, coutinue 사용 불가능 <br>- Airbnb Style Guide에서 권장하는 방식|
 
 # 객체 (Object)
-- 객체는 속성(property)의 집합이며, 중괄호 내부에 key와 value의 쌍으로 표현
+- 키(key)와 값(value)으로 이루어진 속성(property)의 모음
 - key
     - 문자열 타입만 가능
     - key 이름에 띄어쓰기 등의 구분자가 있으면 따옴표로 묶어서 표현
