@@ -286,3 +286,257 @@ export default {
 2. 호출된 함수에서 $emit을 통해 상위 컴포넌트에 이벤트(child-to-parent)발생
 3. 상위 컴포넌트는 자식 컴포넌트가 발생시킨 이벤트(child-to-parent)를 청취하여 연결된 핸들러 함수(parentGetEvent)호출
 ### emit with data
+- 이벤트를 발생(emit)시킬 때 인자로 데이터를 전달 가능
+```vue
+// MyChild.vue
+
+<template>
+  <div>
+    ...
+    <button @click="childToParent">클릭</button>
+  </div>
+</template>
+
+<script>
+export default {
+  ...
+  methods: {
+    childToParent: function () {
+      this.$emit('child-to-parent', 'child data')
+    }
+  }
+}
+</script>
+```
+- 이렇게 전달한 데이터는 이벤트와 연결된 부모 컴포넌트의 핸들러 함수의 인자로 사용 가능
+```vue
+// MyComponent.vue
+
+<template>
+  <div class="border">
+    <h1>This is MyComponent</h1>
+    <MyChild 
+    ...
+    @child-to-parent="parentGetEvent"
+    />
+  </div>
+</template>
+
+<script>
+import MyChild from '@/components/MyChild'
+
+export default {
+  ...
+  methods: {
+    parentGetEvent(inputData) {
+      console.log('자식 컴포넌트에서 발생한 이벤트')
+      console.log(`child에서 보낸 ${inputData}`)
+    }
+  }
+}
+</script>
+```
+### emit with data 흐름 정리
+1. 자식 컴포넌트에 있는 버튼 클릭 이벤트를 청취하여 연결된 핸들러 함수(ChildToParent)호출
+2. 호출된 함수에서 $emit을 통해 부모 컴포넌트에 이벤트(child-to-parent)를 발생
+  - 이벤트에 데이터(child data)를 함께 전달
+3. 부모 컴포넌트는 자식 컴포넌트의 이벤트 (child-to-parent)를 청취하여 연결된 핸들러 함ㅅ(parentGetEvent) 호출, 함수의 인자로 전달된 데이터(child data)가 포함되어 있음
+4. 호출된 함수에서 console.log(\`~child data~\`)실행
+### emit with dynamic data
+- pass props와 마찬가지로 동적인 데이터도 전달 가능
+- 자식 컴포넌트에서 입력받은 데이터를 부모 컴포넌트에게 전달하여 출력
+```vue
+// MyChild.vue
+
+<template>
+  <div>
+    ...
+    <input type="text" v-model="childInputData" @keyup.enter="childInput">
+  </div>
+</template>
+
+<script>
+export default {
+  ...
+  data: function() {
+    return {
+      childInputData: null,
+    }
+  }, 
+  ...
+  methods: {
+    childInput: function () {
+      this.$emit('child-input', this.childInputData)
+      this.childInputData = ""
+    }
+  }
+}
+</script>
+```
+```vue
+// MyComponent.vue
+
+<template>
+  <div class="border">
+    <h1>This is MyComponent</h1>
+    <MyChild 
+    ...
+    @child-input="getDynamicData"
+    />
+  </div>
+</template>
+
+<script>
+import MyChild from '@/components/MyChild'
+
+export default {
+  ...
+  methods: {
+    getDynamicData(input) {
+      console.log(`child에서 입력한 ${input}을 출력`)
+    }
+  }
+}
+</script>
+```
+### emit with dynamic data 흐름 정리
+1. 자식 컴포넌트에 있는 keyup.enter 이벤트를 청취하여 연결된 핸들러 함수(ChildInput) 호출
+2. 호출된 함수에서 $emit을 통해 부모 컴포넌트에 이벤트(child-input)를 발생
+  - 이벤트에 v-model로 바인딩 된 입력받은 데이터를 전달
+3. 상위 컴포넌트는 자식 컴포넌트의 이벤트(child-input)를 청취하여 연결된 핸들러 함수(getDynamicData) 호출, 함수의 인자로 전달된 데이터가 포함되어 있음
+4. 호출된 함수에서 console.log(\`~입력받은 데이터~\`)실행
+### 정리
+- 자식 컴포넌트에서 부모 컴포넌트로 이벤트를 발생시킴
+  - 이벤트에 데이터를 담아 전달 가능
+- 부모 컴포넌트에서는 자식 컴포넌트의 이벤트를 청취
+  - 전달받은 데이터는 이벤트 핸들러 함수의 인자로 사용
+### pass props / emit event 컨벤션
+- HTML 요소에서 사용할 때는 kebab-case, JavaScript에서 사용할 때는 camelCase
+- props
+  - 상위 -> 하위 흐름에서 HTML 요소로 내려줌 : kebab-case
+  - 하위에서 받을 때 JavaScript 에서 받음 : camelCase
+- emit
+  - emit 이벤트를 발생시키면 HTML 요소가 이벤트를 청취함 : kebab-case
+  - 메서드, 변수명 등은 JavaScript 에서 사용함 : camelCase
+# Lifecycle Hooks
+- 각 Vue 인스턴스는 생성과 소멸의 과정 중 단계별 초기화 과정을 거침
+  - Vue 인스턴스가 생성된 경우, 인스턴스를 DOM에 마운트하는 경우, 데이터가 변경되어 DOM을 업데이트하는 경우 등
+- 각 단계가 트리거가 되어 특정 로직을 실행할 수 있음
+- 이를 Lifecycle Hooks 라고 함
+![](2023-05-03-11-28-59.png)
+![](2023-05-03-11-29-21.png)
+### created
+- Vue instance가 생성된 후 호출됨
+- data, computed 등의 설정이 완료된 상태
+- 서버에서 받은 데이터를 vue instance의 data에 할당하는 로직을 구현하기 적합
+- 단, mount되지 않아 요소에 접근할 수 없음
+- JavaScript에서 학습한 Dog API 활용 실습의 경우 버튼을 누르면 강아지 사진을 보여줌
+- 버튼을 누르지 않아도 첫 실행 시 기본 사진이 출력되도록 하고 싶을 때 created 함수에 강아지 사진을 가져오는 함수를 추가
+```vue
+// DogComponent.vue
+
+<script>
+export default {
+  ...
+  created() {
+    this.getDogImage()
+  },
+  ...
+}
+</script>
+```
+### mounted
+- Vue instance가 요소에 mount된 후 호출됨
+- mount된 요소를 조작할 수 있음
+```vue
+// DogComponent.vue
+
+<script>
+export default {
+  ...
+  mounted() {
+    const button = document.querySelector('button')
+    button.innerText = '멍멍!'
+  },
+  ...
+}
+</script>
+```
+- created의 경우, mount되기 전이기 때문에 DOM에 접근할 수 없으므로 동작하지 않음
+- mounted는 주석 처리
+```vue
+// DogComponent.vue
+
+<script>
+export default {
+  ...
+  created() {
+    this.getDogImage()
+    const button = document.querySelector('button')
+    button.innerText = '멍멍'
+  },
+  ...
+}
+</script>
+```
+### updated
+- 데이터가 변경되어 DOM에 변화를 줄 때 호출됨
+```vue
+// DogComponent.vue
+
+<script>
+export default {
+  ...,
+  updated() {
+    console.log('새로운 멍멍이')
+  }
+}
+</script>
+```
+
+### Lifecycle Hooks 특징
+- instance마다 각각의 Lifecycle을 가지고 있음
+```vue
+// App.vue
+
+<script>
+export default {
+  ...,
+  created() {
+    console.log('App created!')
+  },
+  mounted() {
+    console.log('App mounted!')
+  },
+}
+</script>
+```
+```vue
+// ChildComponent.vue
+
+<script>
+import axios from 'axios'
+
+export default {
+  ...,
+  created() {
+    this.getDogImage()
+    console.log('Dog created!')
+  },
+  mounted() {
+    console.log('Dog mounted!')
+    const button = document.querySelector('button')
+    button.innerText = '멍멍!'
+  },
+  updated() {
+    console.log('새로운 멍멍이!')
+    console.log('Dog updated!')
+  }
+}
+</script>
+```
+- Lifecycle Hooks는 컴포넌트별로 정의할 수 있음
+- 현재 해당 프로젝트는 App.vue 생성 -> ChildComponent 생성 -> ChildComponent 부착 -> App.vue 부착 -> ChildComponent 업데이트 순으로 동작한 것
+- 부모 컴포넌트의 mounted hook이 실행 되었다고 해서 자식이 mount 된 것이 아니고, 부모 컴포넌트가 updated hook이 실행 되었다고 해서 자식이 updated 된 것이 아님
+  - 부착 여부가 부모-자식 관계에 따라 순서를 가지고 있지 않은 것
+- instance마다 각각의 Lifecycle을 가지고 있기 때문
