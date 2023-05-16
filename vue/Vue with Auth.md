@@ -371,16 +371,40 @@ const routes = [
 ```vue
 // views/SignUpView.vue
 
+<template>
+  <div>
+    <h1>Sign Up Page</h1>
+    <form @submit.prevent="signUp">
+      <label for="username">username : </label>
+      <input type="text" id="username" v-model="username"><br>
+
+      <label for="password1"> password : </label>
+      <input type="password" id="password1" v-model="password1"><br>
+
+      <label for="password2"> password confirmation : </label>
+      <input type="password" id="password2" v-model="password2">
+      
+      <input type="submit" value="SignUp">
+    </form>
+  </div>
+</template>
+
 <script>
 export default {
   name: 'SignUpView',
   data() {
+    return {
+      username: null,
+      password1: null,
+      password2: null,
+    }
   },
   methods: {
     signUp() {
       const username = this.username
       const password1 = this.password1
       const password2 = this.password2
+      console.log('asdf')
       const payload = {
         username, password1, password2
       }
@@ -389,6 +413,7 @@ export default {
   }
 }
 </script>
+
 ```
 - store/index.js actions 작성
 - payload가 가진 값을 각각 할당
@@ -427,10 +452,8 @@ export default new Vuex.Store({
     token: null
   },
   mutations: {
-    mutations: {
-      SIGN_UP(state, token){
-        state.token = token
-      }
+    SIGN_UP(state, token){
+      state.token = token
     }
   },
 })
@@ -448,5 +471,418 @@ $ npm install vuex-persistedstate
 ```js
 // store/index.js
 
+import createPersistedState from 'vuex-persistedstate'
 
+export default new Vuex.Store({
+  plugins: [
+    createPersistedState(),
+  ],
+})
 ```
+- localStorage 확인
+### [참고] User 인증 정보를 localStorage에 저장해도 될까?
+- 안전한 방법은 아니다
+- 따라서, vuex-persistedstate는 아래 2가지 방법을 제공
+  1. 쿠키를 사용하여 관리
+  2. 로컬 저장소를 난독화 하여 관리
+
+## Login Request
+### Login Page
+- views/LogInView.vue 작성
+- 회원가입 로직과 동일
+- Server에서 정의한 field명 확인
+  1. username
+  2. password
+```vue
+// views/LogInView.vue
+
+<template>
+  <div>
+    <h1>LogIn Page</h1>
+    <form @submit.prevent="login">
+      <label for="username">username : </label>
+      <input type="text" id="username" v-model="username"><br>
+
+      <label for="password"> password : </label>
+      <input type="password" id="password" v-model="password"><br>
+
+      <input type="submit" value="logIn">
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'LogInView',
+  data() {
+    return {
+      username: null,
+      password: null,
+    }
+  },
+  methods: {
+    login() {
+      const username = this.username
+      const password = this.password
+      const payload = {
+        username, password
+      }
+      this.$store.dispatch('login', payload)
+    }
+  }
+}
+</script>
+```
+- router/index.js 내용 추가
+```js
+...
+import LogInView from '@/views/LogInView'
+
+...
+
+const routes = [
+  ...
+  {
+    path: '/login',
+    name: 'LogInView',
+    component: LogInView
+  },
+  ...
+]
+```
+- src/App.vue 내용 추가
+```vue
+// src/App.vue
+
+<template>
+  <div id="app">
+    <nav>
+      ...
+      <router-link :to="{ name: 'LogInView' }">LogInPage</router-link>
+    </nav>
+    <router-view/>
+  </div>
+</template>
+```
+- 로그인 화면 확인
+### Login Request
+- signUp과 다른 점은 password1, password2 가 password로 바뀐것 뿐
+- 요청을 보내고 응답을 받은 Token을 state에 저장하는 것 까지도 동일
+  - mutations가 처리 해야 하는 업무가 동일
+  - SIGN_UP mutations를 SAVE_TOKEN mutations로 통합해 signup과 login모두 접근가능
+- views/LogInView.vue 내용 추가
+  - 사용자 입력 값을 하나의 객체 payload에 담아 전달
+```vue
+// views/LogInView.vue
+
+<script>
+export default {
+  name: 'LogInView',
+  data() {
+    return {
+      username: null,
+      password: null,
+    }
+  },
+  methods: {
+    login() {
+      const username = this.username
+      const password = this.password
+      const payload = {
+        username, password
+      }
+      this.$store.dispatch('login', payload)
+    }
+  }
+}
+</script>
+```
+- store/index.js 추가
+- payload가 가진 값을 각각 할당
+- AJAX 요청으로 응답 받은 데이터는 다수의 컴포넌트에서 사용해야 함
+- state에 저장 할 것
+  - 이 때, mutations는 SAVE_TOKEN 호출 확인
+```js
+// store/index.js
+mutations: {
+  ...
+  SAVE_TOKEN(state, token){
+    state.token = token
+  }
+},
+
+actions: {
+  ...
+  signUp(context, payload) {
+    const username = payload.username
+    const password1 = payload.password1
+    const password2 = payload.password2
+    axios({
+      method: 'post',
+      url: `${API_URL}/accounts/signup/`,
+      data: {
+        username, password1, password2
+      }
+    })
+    .then(res => {
+      console.log(res)
+      context.commit('SAVE_TOKEN', res.data.key)
+    })
+    .catch(err => console.log(err))
+  },
+  login(context, payload) {
+    const username = payload.username
+    const password = payload.password
+    axios({
+      method: 'post',
+      url: `${API_URL}/accounts/login/`,
+      data: {
+        username, password
+      }
+    })
+    .then((res) => {
+      context.commit('SAVE_TOKEN', res.data.key)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }
+},
+```
+- 최종 결과 확인
+  - 정확한 결과 확인을 위해 기존 토큰 삭제 추천
+
+### IsAuthenticated in Vue
+- 회원가입, 로그인 요청에 대한 처리 후 state에 저장도니 Token을 직접 확인하기 전까지 인증 여부 확인 불가
+- 인증 되지 않았을 시 게시글 정보를 확인할 수 없으나 이유를 알 수 없음
+  - 로그인 여부를 확인 할 수 있는 수단이 없음
+- store/index.js 추가
+- 로그인 여부 판별 코드
+  - Token이 있으면 true 없으면 false 반환
+```js
+// store/index.js
+
+export default new Vuex.Store({
+  ...
+  getters: {
+    isLogin(state) {
+      return state.token ? true : false
+    }
+  },
+})
+```
+- views/ArticleView.vue 추가
+  - isLogin 정보를 토대로 게시글 정보를 요청할 것인지, LogInView로 이동시킬 것인지 결정
+```vue
+// views/ArticeView.vue
+
+<script>
+export default {
+  ...
+  computed:{
+    isLogin() {
+      return this.$store.getters.isLogin
+    }
+  },
+  methods: {
+    getArticles() {
+      if (this.isLogin) {
+        this.$store.dispatch('getArticles')
+      } else {
+        alert('로그인이 필요한 페이지 입니다')
+        this.$router.push({name: 'LogInView'})
+      }
+
+    }
+  }
+}
+</script>
+```
+- store/index.js 내용 추가
+- store/index.js에서는 $router에 접근 할 수 없음
+  - router를 import 해야 함
+```js
+// store/index.js
+
+import router from '@/router'
+...
+export default new Vuex.Store({
+  ...
+  mutations: {
+    ...
+    SAVE_TOKEN(state, token){
+      state.token = token
+      router.push({name:'ArticleView'})
+    }
+  },
+})
+```
+- localStorage에서 token 삭제 후, 새로고침
+- articles 링크 클릭 시 LoginPage로 이동
+> 로그인 후 articles에선
+- 인증은 받았지만 게시글 조회 시 인증 정보를 담아 보내고 있지 않음
+- 원인
+  - 로그인은 해쓰나 Django에서는 로그인 한 것으로 인식하지 못함
+  - 발급 받은 token을 요청으로 보내지 않았기 때문
+## Request with Token
+- Token이 준비되었으니 headers HTTP에 Token을 담아 요청을 보내면 된다
+### Article List Read with Token
+- store/index.js 추가
+  - headers에 Authorizations와 token추가
+```js
+// store/index.js
+
+actions: {
+  getArticles(context) {
+    axios({
+      method: 'get',
+      url: `${API_URL}/api/v1/articles/`,
+      headers: {
+        Authorization: `Token ${context.state.token}`
+      }
+    })
+    .then((res) => {
+    // console.log(res, context)
+      context.commit('GET_ARTICLES', res.data)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  },
+}
+```
+- 결과 확인
+  - 404오류는 view함수가 그렇게 처리하도록 했기 때문
+  - 게시글 생성 기능 완성 후, 다시 결과 확인
+### Article Create with Token
+- views/CreateView.vue 추가
+  - headers에 Authorization와 token 추가
+```vue
+// views/CreateView.vue
+
+<script>
+import axios from 'axios'
+const API_URL = 'http://127.0.0.1:8000'
+
+export default {
+  name: 'CreateView',
+  data() {
+    return {
+      title: null,
+      content: null,
+    }
+  },
+  methods: {
+    createArticle() {
+      const title = this.title
+      const content = this.content
+
+      if (!title) {
+        alert('제목 입력해주세요')
+        return
+      } else if (!content){
+        alert('내용 입력해주세요')
+        return
+      }
+      axios({
+        method: 'post',
+        url: `${API_URL}/api/v1/articles/`,
+        data: { title, content},
+        headers: {
+          Authorization: `Token ${this.$store.state.token}`
+        }
+      })
+      .then(() => {
+        // console.log(res)
+        this.$router.push({name: 'ArticleView'})
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    }
+  }
+}
+</script>
+```
+- 정상 작동 확인
+
+### Create Article with User
+- articles/models.py 추가
+- 게시글 작성 시 User 정보를 포함하여 작성하도록 수정
+  - User 정보를 Vue에서도 확인 가능하도록 정보 제공
+```python
+# articles/models.py
+
+from django.db import models
+from django.conf import settings
+
+# Create your models here.
+class Article(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    ...
+```
+- makemigrations & migrate
+  - 기존 게시글에 대한 User 정보 default값 설정
+- articles/serializers.py 추가
+  - ArticleListSerializer에서 user는 사용자가 작성 하지 않음 -> fields에 추가
+  - ArticlesSerializer에서 user는 읽기 전용으로 제공
+  - username을 확인 할 수 있도록 username field 정의 필요
+```python
+# articles/serializers.py
+
+class ArticleListSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = Article
+        # fields = ('id', 'title', 'content')
+        fields = ('id', 'title', 'content', 'user', 'username')
+
+class ArticleSerializer(serializers.ModelSerializer):
+    comment_set = CommentSerializer(many=True, read_only=True)
+    comment_count = serializers.IntegerField(source='comment_set.count', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+
+    class Meta:
+        model = Article
+        fields = '__all__'
+        read_only_fields = ('user', )
+```
+- articles/views.py 수정
+  - 게시글 생성 시 user 정보 저장
+```python
+# articles/views.py
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def article_list(request):
+    ...
+    elif request.method == 'POST':
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            # serializer.save()
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+```
+- components/ArticleListItem.vue 추가
+  - article이 가지고 있을 user 정보 출력
+```vue
+// components/ArticleListItem.vue
+
+<template>
+  <div>
+    <h5>{{ article.id }}</h5>
+    <p>작성자 : {{ article.username }}</p>
+    <p>{{ article.title }}</p>
+    <router-link :to="{
+      name: 'DetailView',
+      params: {id: article.id }}">
+      [DETAIL]
+    </router-link>
+    <hr>
+  </div>
+</template>
+```
+- 작성자 정보 확인
