@@ -9,6 +9,8 @@ function App() {
   let [title, setTitle] = useState(['첫 번째', '두 번째', '세 번째'])
   let [like, setLike] = useState(0)
 
+  let [modal, setModal] = useState(false)
+
   return (
     <div className="App">
       <div className="nav-tab">
@@ -28,10 +30,14 @@ function App() {
         <p>7월 7일 작성</p>
       </div>
       <div className="list">
-        <h4>{title[2]}</h4>
+        <h4 onClick={() => {setModal(!modal)}}>{title[2]}</h4>
         <p>7월 7일 작성</p>
       </div>
-      <Modal></Modal>
+
+      {
+        modal == true ? <Modal></Modal> : null
+      }
+      
     </div>
   );
 }
