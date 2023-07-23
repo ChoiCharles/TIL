@@ -13,6 +13,8 @@ function App() {
 
   let [modaltitle, setModaltitle] = useState(0)
 
+  let [inputtext, setInputtext] = useState("")
+
   return (
     <div className="App">
 
@@ -39,10 +41,15 @@ function App() {
               }}>제목변경</button>
               </div>
               <p>7월 7일 작성</p>
+              <button onClick={()=>{let copy=[...title]; copy.splice(i, 1); setTitle(copy)}}>삭제</button>
             </div>
           )
         })
       }
+
+      <input onChange={(e)=>{setInputtext(e.target.value)}}></input>
+      <button onClick={()=>{let copy = [...title]; copy.push(inputtext); setTitle(copy)
+      let copylike = [...like]; copylike.push(0); setLike(copylike);}}>입력</button>
 
       {
         modal == true ? <Modal title={title} like={like} setTitle={setTitle} modaltitle={modaltitle}></Modal> : null
