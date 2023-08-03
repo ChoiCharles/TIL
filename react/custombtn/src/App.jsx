@@ -29,8 +29,6 @@ const App = () => {
       setInitialY(e.clientY - positionData.currentY);
     }
     setActive(true);
-    const data = [{active:active, currentX:currentX, currentY:currentY}]
-    updateBtn(name, data)
   };
 
   const dragEnd = (name) => {
