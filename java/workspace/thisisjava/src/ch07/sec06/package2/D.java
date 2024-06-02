@@ -13,9 +13,11 @@ public class D extends A {
 	}
 	
 	// 직접 객체 생성하는건 안됨
+	/*
 	public void method2() {
 		A a = new A();
 		a.field = "value";
 		a.method();
 	}
+	*/
 }
